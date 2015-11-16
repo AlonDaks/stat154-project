@@ -1,45 +1,11 @@
 from nltk import word_tokenize
+from nltk.stem import WordNetLemmatizer
 from os import listdir
 import re
 from sklearn.feature_extraction.text import CountVectorizer
+import stop_words
 
 RELATIVE_DATA_PATH = '../data/'
-
-COMMON_ENGLISH_WORDS = [
-    'a', 'able', 'about', 'across', 'after', 'all', 'almost', 'also', 'am',
-    'among', 'an', 'and', 'any', 'are', 'as', 'at', 'be', 'because', 'been',
-    'but', 'by', 'can', 'cannot', 'could', 'dear', 'did', 'do', 'does',
-    'either', 'else', 'ever', 'every', 'for', 'from', 'get', 'got', 'had',
-    'has', 'have', 'he', 'her', 'hers', 'him', 'his', 'how', 'however', 'i',
-    'if', 'in', 'into', 'is', 'it', 'its', 'just', 'least', 'let', 'like',
-    'likely', 'may', 'me', 'might', 'most', 'must', 'my', 'neither', 'no',
-    'nor', 'not', 'of', 'off', 'often', 'on', 'only', 'or', 'other', 'our',
-    'own', 'rather', 'said', 'say', 'says', 'she', 'should', 'since', 'so',
-    'some', 'than', 'that', 'the', 'their', 'them', 'then', 'there', 'these',
-    'they', 'this', 'tis', 'to', 'too', 'twas', 'us', 'wants', 'was', 'we',
-    'were', 'what', 'when', 'where', 'which', 'while', 'who', 'whom', 'why',
-    'will', 'with', 'would', 'yet', 'you', 'your'
-]
-
-COMMON_WORDS = ['project', 'gutenberg', 'ebook', 'title', 'author', 'release',
-                'chapter']
-
-ROMAN_NUMERALS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x',
-                  'xi', 'xii', 'xiii', 'xiv', 'xv', 'xvi', 'xvii', 'xviii',
-                  'xix', 'xx', 'xxi', 'xxii', 'xxiii', 'xxiv', 'xxv', 'xxvi',
-                  'xxvii', 'xxviii', 'xxix', 'xxx', 'xxxi', 'xxxii', 'xxxiii',
-                  'xxxiv', 'xxxv', 'xxxvi', 'xxxvii', 'xxxviii', 'xxxix', 'xl',
-                  'xli', 'xlii', 'xliii', 'xliv', 'xlv', 'xlvi', 'xlvii',
-                  'xlviii', 'xlix', 'l', 'li', 'lii', 'liii', 'liv', 'lv',
-                  'lvi', 'lvii', 'lviii', 'lix', 'lx', 'lxi', 'lxii', 'lxiii',
-                  'lxiv', 'lxv', 'lxvi', 'lxvii', 'lxviii', 'lxix', 'lxx',
-                  'lxxi', 'lxxii', 'lxxiii', 'lxxiv', 'lxxv', 'lxxvi',
-                  'lxxvii', 'lxxviii', 'lxxix', 'lxxx', 'lxxxi', 'lxxxii',
-                  'lxxxiii', 'lxxxiv', 'lxxxv', 'lxxxvi', 'lxxxvii',
-                  'lxxxviii', 'lxxxix', 'xc', 'xci', 'xcii', 'xciii', 'xciv',
-                  'xcv', 'xcvi', 'xcvii', 'xcviii', 'xcix', 'c']
-
-STOP_WORDS = COMMON_ENGLISH_WORDS + COMMON_WORDS + ROMAN_NUMERALS
 
 
 def document_paths(data_set):
@@ -66,15 +32,37 @@ def training_path_by_class(class_name):
 def featurize_documents(document_paths):
     vectorizer = CountVectorizer(decode_error='replace',
                                  input='filename',
-                                 stop_words=STOP_WORDS,
+                                 stop_words=stop_words.STOP_WORDS,
                                  tokenizer=Tokenizer())
     X = vectorizer.fit_transform(document_paths).toarray()
     return X, vectorizer.get_feature_names()
 
 
+def get_word_count_dictionary(X, words):
+    return {words[i]: sum(X[:,i]) for i in range(X.shape[1])}
+
 class Tokenizer:
+    def __init__(self):
+         self.wnl = WordNetLemmatizer()
+
     def __call__(self, doc):
-        return [self.strip(t) for t in word_tokenize(doc)]
+        doc = self.strip_gutenberg_header_footer(doc)
+        return [self.wnl.lemmatize(self.strip(t)) for t in word_tokenize(doc)]
 
     def strip(self, word):
         return re.sub('[\W_]+', '', word)
+
+    def strip_gutenberg_header_footer(self, doc):
+        try:
+            doc = re.split(
+                '\*\*\* start of this project gutenberg ebook .* \*\*\*',
+                doc)[1]
+        except:
+            pass
+        try:
+            doc = re.split(
+                '\*\*\* end of this project gutenberg ebook .* \*\*\*', doc)[0]
+        except:
+            pass
+        return doc
+        
