@@ -43,7 +43,7 @@ def get_word_count_dictionary(X, words):
 
 class Tokenizer:
     def __init__(self):
-         self.wnl = WordNetLemmatizer()
+        self.wnl = WordNetLemmatizer()
 
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)

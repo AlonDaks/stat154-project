@@ -33,3 +33,4 @@ ROMAN_NUMERALS = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x',
                   'xcv', 'xcvi', 'xcvii', 'xcviii', 'xcix', 'c']
 
 STOP_WORDS = COMMON_ENGLISH_WORDS + COMMON_WORDS + ROMAN_NUMERALS
+
