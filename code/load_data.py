@@ -1,5 +1,6 @@
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
+import numpy as np
 from os import listdir
 import re
 from sklearn.feature_extraction.text import CountVectorizer
@@ -39,7 +40,20 @@ def featurize_documents(document_paths):
 
 
 def get_word_count_dictionary(X, words):
-    return {words[i]: sum(X[:,i]) for i in range(X.shape[1])}
+    return {words[i]: sum(X[:, i]) for i in range(X.shape[1])}
+
+
+def lemmatize_design_matrix(X, words):
+    wnl = WordNetLemmatizer()
+    words = [wnl.lemmatize(w) for w in words]
+    merged_columns = {}
+    for i in range(len(words)):
+        if words[i] not in merged_columns:
+            merged_columns[words[i]] = X[:, i]
+        else:
+            merged_columns[words[i]] += X[:, i]
+    return np.array(merged_columns.values()).T, words
+
 
 class Tokenizer:
     def __init__(self):
@@ -47,7 +61,7 @@ class Tokenizer:
 
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)
-        return [self.wnl.lemmatize(self.strip(t)) for t in word_tokenize(doc)]
+        return [self.strip(t) for t in word_tokenize(doc)]
 
     def strip(self, word):
         return re.sub('[\W_]+', '', word)
@@ -65,4 +79,3 @@ class Tokenizer:
         except:
             pass
         return doc
-        
