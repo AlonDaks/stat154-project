@@ -39,6 +39,21 @@ def featurize_documents(document_paths):
     return X, vectorizer.get_feature_names()
 
 
+def get_labels(paths):
+    labels = []
+    for path in paths:
+        label = None
+        if 'child' in path:
+            label = 1
+        elif 'history' in path:
+            label = 2
+        elif 'religion' in path:
+            label = 3
+        else:
+            label = 4
+        labels.append(label)
+    return np.array(labels)
+
 def get_word_count_dictionary(X, words):
     return {words[i]: sum(X[:, i]) for i in range(X.shape[1])}
 
@@ -47,11 +62,15 @@ def lemmatize_design_matrix(X, words):
     wnl = WordNetLemmatizer()
     words = [wnl.lemmatize(w) for w in words]
     merged_columns = {}
+    bad_indecies = []
     for i in range(len(words)):
         if words[i] not in merged_columns:
             merged_columns[words[i]] = X[:, i]
         else:
             merged_columns[words[i]] += X[:, i]
+            bad_indecies.append(words[i])
+    for j in bad_indecies:
+        words.remove(j)   
     return np.array(merged_columns.values()).T, words
 
 
@@ -61,7 +80,7 @@ class Tokenizer:
 
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)
-        return [self.strip(t) for t in word_tokenize(doc)]
+        return [self.wnl(self.strip(t)) for t in word_tokenize(doc)]
 
     def strip(self, word):
         return re.sub('[\W_]+', '', word)
@@ -79,3 +98,6 @@ class Tokenizer:
         except:
             pass
         return doc
+    
+    
+    
