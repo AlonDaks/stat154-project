@@ -62,7 +62,6 @@ def lemmatize_design_matrix(X, words):
     wnl = WordNetLemmatizer()
     words = [wnl.lemmatize(w) for w in words]
     merged_columns = {}
-    bad_indecies = []
     for i in range(len(words)):
         if words[i] not in merged_columns:
             merged_columns[words[i]] = X[:, i]
