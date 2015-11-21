@@ -68,10 +68,7 @@ def lemmatize_design_matrix(X, words):
             merged_columns[words[i]] = X[:, i]
         else:
             merged_columns[words[i]] += X[:, i]
-            bad_indecies.append(words[i])
-    for j in bad_indecies:
-        words.remove(j)   
-    return np.array(merged_columns.values()).T, words
+    return np.array(merged_columns.values()).T, merged_columns.keys()
 
 
 class Tokenizer:
