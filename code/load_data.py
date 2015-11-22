@@ -54,6 +54,14 @@ def get_labels(paths):
         labels.append(label)
     return np.array(labels)
 
+def remove_numerals(X, words):
+    merged_columns = {}
+    for i in range(len(words)):
+        if not re.match("\A\d*\Z", words[i]):
+            merged_columns[words[i]] = X[:, i]
+    return np.array(merged_columns.values()).T, merged_columns.keys()
+
+
 def get_word_count_dictionary(X, words):
     return {words[i]: sum(X[:, i]) for i in range(X.shape[1])}
 
@@ -71,12 +79,12 @@ def lemmatize_design_matrix(X, words):
 
 
 class Tokenizer:
-    def __init__(self):
-        self.wnl = WordNetLemmatizer()
+#    def __init__(self):
+#        self.wnl = WordNetLemmatizer()
 
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)
-        return [self.wnl(self.strip(t)) for t in word_tokenize(doc)]
+        return [self.strip(t) for t in word_tokenize(doc)]
 
     def strip(self, word):
         return re.sub('[\W_]+', '', word)
