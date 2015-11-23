@@ -3,7 +3,7 @@ from nltk.stem import WordNetLemmatizer
 import numpy as np
 from os import listdir
 import re
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 import stop_words
 
 RELATIVE_DATA_PATH = '../data/'
@@ -31,9 +31,11 @@ def training_path_by_class(class_name):
 
 
 def featurize_documents(document_paths):
-    vectorizer = CountVectorizer(decode_error='replace',
+    vectorizer = TfidfVectorizer(decode_error='replace',
                                  input='filename',
                                  stop_words=stop_words.STOP_WORDS,
+                                 min_df = .05,
+                                 max_df = .95,
                                  tokenizer=Tokenizer())
     X = vectorizer.fit_transform(document_paths).toarray()
     return X, vectorizer.get_feature_names()
@@ -79,9 +81,6 @@ def lemmatize_design_matrix(X, words):
 
 
 class Tokenizer:
-#    def __init__(self):
-#        self.wnl = WordNetLemmatizer()
-
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)
         return [self.strip(t) for t in word_tokenize(doc)]
