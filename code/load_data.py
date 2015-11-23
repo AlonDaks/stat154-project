@@ -77,11 +77,14 @@ def lemmatize_design_matrix(X, words):
             merged_columns[words[i]] += X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
 
+# Assume that X is our numpy array design matrix, header is a list of our features
+def write_to_csv(filename, X, header):
+    np.savetxt("design_matrix.csv", X, fmt = "%d", delimiter = ",", header = ",".join(header), comments = "")
+
 
 class Tokenizer:
 #    def __init__(self):
 #        self.wnl = WordNetLemmatizer()
-
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)
         return [self.strip(t) for t in word_tokenize(doc)]
