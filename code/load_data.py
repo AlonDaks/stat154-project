@@ -34,11 +34,11 @@ def featurize_documents(document_paths):
     vectorizer = TfidfVectorizer(decode_error='replace',
                                  input='filename',
                                  stop_words=stop_words.STOP_WORDS,
-                                 min_df = .05,
-                                 max_df = .95,
+                                 min_df=.05,
+                                 max_df=.95,
                                  tokenizer=Tokenizer())
     X = vectorizer.fit_transform(document_paths).toarray()
-    return X, vectorizer.get_feature_names()
+    return X, vectorizer.get_feature_names(), vectorizer
 
 
 def get_labels(paths):
@@ -55,6 +55,7 @@ def get_labels(paths):
             label = 4
         labels.append(label)
     return np.array(labels)
+
 
 def remove_numerals(X, words):
     merged_columns = {}
@@ -79,9 +80,15 @@ def lemmatize_design_matrix(X, words):
             merged_columns[words[i]] += X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
 
+
 # Assume that X is our numpy array design matrix, header is a list of our features
 def write_to_csv(filename, X, header):
-    np.savetxt("design_matrix.csv", X, fmt = "%d", delimiter = ",", header = ",".join(header), comments = "")
+    np.savetxt("design_matrix.csv",
+               X,
+               fmt="%d",
+               delimiter=",",
+               header=",".join(header),
+               comments="")
 
 
 class Tokenizer:
@@ -105,6 +112,3 @@ class Tokenizer:
         except:
             pass
         return doc
-    
-    
-    
