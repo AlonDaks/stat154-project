@@ -6,7 +6,6 @@ import random
 from rf_classify import Classifier
 from cross_validation import CrossValidate
 
-
 paths = document_paths('train')
 train_paths = random.sample(paths, 5000)
 remaining_paths = [p for p in paths if p not in train_paths]
@@ -21,11 +20,12 @@ y_train = get_labels(train_paths)
 y_test = get_labels(test_paths)
 
 print 'classifying'
-rf = Classifier(X, y_train, n_trees = 500)
+rf = Classifier(X, y_train)
+rf.set_
 rf.train()
 
-
-X_test = lemmatize_design_matrix(vectorizer.transform(test_paths).toarray(), initial_words)[0]
+X_test = lemmatize_design_matrix(
+    vectorizer.transform(test_paths).toarray(), initial_words)[0]
 y_predicted = rf.predict(X_test)
 
 print accuracy_score(y_predicted, y_test)
