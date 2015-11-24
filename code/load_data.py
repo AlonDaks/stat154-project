@@ -7,7 +7,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet
 from os import listdir
 import re
-from sklearn.feature_extraction.text import CountVectorizer
+from sklearn.feature_extraction.text import TfidfVectorizer
 import stop_words
 
 RELATIVE_DATA_PATH = '../data/'
@@ -35,12 +35,14 @@ def training_path_by_class(class_name):
 
 
 def featurize_documents(document_paths):
-    vectorizer = CountVectorizer(decode_error='replace',
+    vectorizer = TfidfVectorizer(decode_error='replace',
                                  input='filename',
                                  stop_words=stop_words.STOP_WORDS,
+                                 min_df=.05,
+                                 max_df=.95,
                                  tokenizer=Tokenizer())
     X = vectorizer.fit_transform(document_paths).toarray()
-    return X, vectorizer.get_feature_names()
+    return X, vectorizer.get_feature_names(), vectorizer
 
 def get_labels(paths):
     labels = []
@@ -56,6 +58,7 @@ def get_labels(paths):
             label = 4
         labels.append(label)
     return np.array(labels)
+
 
 def remove_numerals(X, words):
     merged_columns = {}
@@ -102,14 +105,18 @@ def lemmatize_design_matrix(X, words):
             merged_columns[words[i]] += X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
 
+
 # Assume that X is our numpy array design matrix, header is a list of our features
 def write_to_csv(filename, X, header):
-    np.savetxt("design_matrix.csv", X, fmt = "%d", delimiter = ",", header = ",".join(header), comments = "")
+    np.savetxt("design_matrix.csv",
+               X,
+               fmt="%d",
+               delimiter=",",
+               header=",".join(header),
+               comments="")
 
 
 class Tokenizer:
-#    def __init__(self):
-#        self.wnl = WordNetLemmatizer()
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)
         return [self.strip(t) for t in word_tokenize(doc)]
@@ -130,6 +137,3 @@ class Tokenizer:
         except:
             pass
         return doc
-    
-    
-    
