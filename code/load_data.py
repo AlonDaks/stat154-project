@@ -74,27 +74,23 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.ADJ
     elif treebank_tag.startswith('V'):
         return wordnet.VERB
-    elif treebank_tag.startswith('N'):
-        return wordnet.NOUN
     elif treebank_tag.startswith('R'):
         return wordnet.ADV
     else:
         return wordnet.NOUN
     
-# text is a string that contains all text from a single document. Assume no non alpha-numeric text.
-def tag_words(text):
-    words = []
-    for sentence in sent_tokenize(text):
-        tokenized_sentence = word_tokenize(sentence)
-        item = pos_tag(tokenized_sentence)
-        words += [(i, get_wordnet_pos(tag)) for (i, tag) in item]
-    return words
+# text is a list that contains all text from a single document. Assume no non alpha-numeric text.
+def tag_words(words):
+    tags = pos_tag(words)
+    tags = [(word, get_wordnet_pos(tag)) for (word, tag) in tags]
+    return tags
 
 def get_word_count_dictionary(X, words):
     return {words[i]: sum(X[:, i]) for i in range(X.shape[1])}
 
-# assume that words is the output from runnign tag_words on our features.
+# Assume X is our design matrix, words is a list of our features.
 def lemmatize_design_matrix(X, words):
+    words = tag_words(words)
     wnl = WordNetLemmatizer()
     words = [wnl.lemmatize(w, t) for w,t in words]
     merged_columns = {}
@@ -108,9 +104,10 @@ def lemmatize_design_matrix(X, words):
 
 # Assume that X is our numpy array design matrix, header is a list of our features
 def write_to_csv(filename, X, header):
-    np.savetxt("design_matrix.csv",
+    s = filename + ".csv"
+    np.savetxt(s,
                X,
-               fmt="%d",
+               fmt="%.8f",
                delimiter=",",
                header=",".join(header),
                comments="")

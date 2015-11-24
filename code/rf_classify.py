@@ -2,10 +2,11 @@ from load_data import *
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import KFold
+from cross_validation import CrossValidate
 
 class Classifier:
-    def __init__(self, X, y, n_trees):
-        self.model = RandomForestClassifier(n_estimators = n_trees)
+    def __init__(self, X, y):
+        self.model = RandomForestClassifier(n_estimators = 500)
         self.X = X
         self.y = y 
         
@@ -14,19 +15,41 @@ class Classifier:
         
     def predict(self, new_data):
         return self.model.predict(new_data)
-  
+    
+    def set_num_params(self, p):
+        self.model.max_features = p
+    
+    def set_num_trees(self, n):
+        self.model.n_estimators = n
+    
 
-train_paths  = np.random.choice(document_paths('train'), size = 3000, replace=False)
-test_paths  = np.random.choice(document_paths('train'), size = 500, replace=False)
-X, words, vectorizer = featurize_documents(train_paths)
-X, words = lemmatize_design_matrix(X, words)
-y_train = get_labels(train_paths)
+# Cross Validate the number of parameters used. Or use OOB error. Assume params is a list, X, y, n_trees are as in Classifier. Type is either cv or OOB
+def get_num_features(X, y, params, nfolds = 10, n_trees = 500, type = "cv"):
+    rf = Classifier(X, y)
+    if n_trees != 500:
+        rf.set_num_trees(n_trees)
+    scores = {}
+    
+    if type == "OOB":
+        for p in params:
+            rf.set_num_params(p)
+            rf.train()
+            scores[rf.model.oob_score_] = p
+        m1 = min(scores.keys())
+        return scores[m1], m1
+    else:   
+        cv = CrossValidate(rf.model, X, y)
+        for p in params:
+            rf.set_num_params(p)
+            rf.train()
+            cv.set_model(rf.model)
+            scores[cv.get_cv_score(nfolds)] = p
+        m2 = min(scores.keys())
+        return scores[m2], m2
+        
+        
+        
+    
+    
+    
 
-print 'classifying'
-rf = Classifier(X, y_train, n_trees = 500)
-rf.train()
-
-X_test = lemmatize_design_matrix(vectorizer.transform(test_paths).toarray(), words)[0]
-y_predicted = rf.predict(X_test)
-
-print accuracy_score(y_predicted, get_labels(test_paths))
