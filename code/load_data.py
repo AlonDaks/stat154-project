@@ -9,6 +9,7 @@ from os import listdir
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 import stop_words
+from collections import OrderedDict
 
 RELATIVE_DATA_PATH = '../data/'
 
@@ -59,9 +60,15 @@ def get_labels(paths):
         labels.append(label)
     return np.array(labels)
 
+# Return 1 if in class K, 0 otherwise. To be used for ROC curves.
+def get_binary_labels(k, paths):
+    labels = get_labels(paths)
+    return np.array([1 if l == k else 0 for l in labels])
+    
+
 
 def remove_numerals(X, words):
-    merged_columns = {}
+    merged_columns = OrderedDict()
     for i in range(len(words)):
         if not re.match("\A\d*\Z", words[i]):
             merged_columns[words[i]] = X[:, i]
@@ -93,7 +100,7 @@ def lemmatize_design_matrix(X, words):
     words = tag_words(words)
     wnl = WordNetLemmatizer()
     words = [wnl.lemmatize(w, t) for w,t in words]
-    merged_columns = {}
+    merged_columns = OrderedDict()
     for i in range(len(words)):
         if words[i] not in merged_columns:
             merged_columns[words[i]] = X[:, i]

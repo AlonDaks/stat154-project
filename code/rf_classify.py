@@ -16,6 +16,13 @@ class Classifier:
     def predict(self, new_data):
         return self.model.predict(new_data)
     
+    def predict_proba(self, new_data):
+        return self.model.predict_proba(new_data)
+    
+    def get_kth_prob(self, k, new_data):
+        probs = self.predict_proba(new_data)
+        return probs[:, k]
+    
     def set_num_params(self, p):
         self.model.max_features = p
     
@@ -46,6 +53,8 @@ def get_num_features(X, y, params, nfolds = 10, n_trees = 500, type = "cv"):
             scores[cv.get_cv_score(nfolds)] = p
         m2 = min(scores.keys())
         return scores[m2], m2
+
+    
         
         
         
