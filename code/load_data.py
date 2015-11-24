@@ -1,6 +1,10 @@
 from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
 import numpy as np
+from nltk.tag import pos_tag
+from nltk.tokenize import sent_tokenize, word_tokenize
+from nltk.tokenize import word_tokenize
+from nltk.corpus import wordnet
 from os import listdir
 import re
 from sklearn.feature_extraction.text import CountVectorizer
@@ -38,7 +42,6 @@ def featurize_documents(document_paths):
     X = vectorizer.fit_transform(document_paths).toarray()
     return X, vectorizer.get_feature_names()
 
-
 def get_labels(paths):
     labels = []
     for path in paths:
@@ -61,14 +64,36 @@ def remove_numerals(X, words):
             merged_columns[words[i]] = X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
 
+# Convert nltk tags to wordnet tags
+def get_wordnet_pos(treebank_tag):
+
+    if treebank_tag.startswith('J'):
+        return wordnet.ADJ
+    elif treebank_tag.startswith('V'):
+        return wordnet.VERB
+    elif treebank_tag.startswith('N'):
+        return wordnet.NOUN
+    elif treebank_tag.startswith('R'):
+        return wordnet.ADV
+    else:
+        return wordnet.NOUN
+    
+# text is a string that contains all text from a single document. Assume no non alpha-numeric text.
+def tag_words(text):
+    words = []
+    for sentence in sent_tokenize(text):
+        tokenized_sentence = word_tokenize(sentence)
+        item = pos_tag(tokenized_sentence)
+        words += [(i, get_wordnet_pos(tag)) for (i, tag) in item]
+    return words
 
 def get_word_count_dictionary(X, words):
     return {words[i]: sum(X[:, i]) for i in range(X.shape[1])}
 
-
+# assume that words is the output from runnign tag_words on our features.
 def lemmatize_design_matrix(X, words):
     wnl = WordNetLemmatizer()
-    words = [wnl.lemmatize(w) for w in words]
+    words = [wnl.lemmatize(w, t) for w,t in words]
     merged_columns = {}
     for i in range(len(words)):
         if words[i] not in merged_columns:
