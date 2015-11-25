@@ -45,6 +45,7 @@ def featurize_documents(document_paths):
     X = vectorizer.fit_transform(document_paths).toarray()
     return X, vectorizer.get_feature_names(), vectorizer
 
+
 def get_labels(paths):
     labels = []
     for path in paths:
@@ -74,6 +75,7 @@ def remove_numerals(X, words):
             merged_columns[words[i]] = X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
 
+
 # Convert nltk tags to wordnet tags
 def get_wordnet_pos(treebank_tag):
 
@@ -85,15 +87,18 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.ADV
     else:
         return wordnet.NOUN
-    
-# text is a list that contains all text from a single document. Assume no non alpha-numeric text.
+
+
+    # text is a list that contains all text from a single document. Assume no non alpha-numeric text.
 def tag_words(words):
     tags = pos_tag(words)
     tags = [(word, get_wordnet_pos(tag)) for (word, tag) in tags]
     return tags
 
+
 def get_word_count_dictionary(X, words):
     return {words[i]: sum(X[:, i]) for i in range(X.shape[1])}
+
 
 # Assume X is our design matrix, words is a list of our features.
 def lemmatize_design_matrix(X, words):
