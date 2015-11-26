@@ -1,6 +1,11 @@
+import matplotlib as mpl
+from math import sqrt
+from rf_classify import Classifier
+mpl.use('TKAgg')
 from matplotlib import pyplot as plt
 import pandas as pd  
 import numpy as np
+from collections import OrderedDict
 
 # Histogram of the sum of frequencies of each word in X. Assume sums is the sum of the columns of our design matrix X
 def histogram(sums, numbins = 100):
@@ -19,6 +24,18 @@ def histogram(sums, numbins = 100):
     plt.suptitle("Word Feature Frequencies", fontsize = 20) 
     plt.show()
 
+# OOB error rate plots for Random Forest Classifiers. numfeatures
+def OOB_error_rates(min, max, X, y, max_features):
+    error_rates = OrderedDict()
+    for i in range(min, max+1):
+        rf = Classifier(X = X, y = y, max_features=max_features, n_estimators=i)
+        rf.train()
+        oob_error = 1 - rf.model.oob_score_
+        error_rates[i] = oob_error
+    return error_rates
+
+
+        
 
     
     

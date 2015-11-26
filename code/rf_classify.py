@@ -10,9 +10,9 @@ class Classifier:
     def __init__(self, X, y, max_features=None, n_estimators=500):
         if not max_features:
             max_features = int(math.sqrt(len(X)))
-        self.model = RandomForestClassifier(max_features,
-                                            max_features=max_features,
-                                            n_estimators=n_estimators)
+        self.model = RandomForestClassifier(max_features=max_features,
+                                            n_estimators=n_estimators,
+                                            oob_score=True)
         self.X = X
         self.y = y
 
@@ -28,23 +28,19 @@ class Classifier:
     def get_kth_prob(self, k, new_data):
         probs = self.predict_proba(new_data)
         return probs[:, k]
-    
-    def set_num_params(self, p):
-        self.model.max_features = p
-    
-    def set_num_trees(self, n):
-        self.model.n_estimators = n
 
-
-    # Cross Validate the number of parameters used. Or use OOB error. Assume params is a list, X, y, n_trees are as in Classifier. Type is either cv or OOB
-def get_num_features(X, y, params, nfolds=10, n_trees=500, type="cv"):
-    scores = {}
+    # Cross Validate the number of parameters used. Assume params is a list, X, y, n_trees are as in Classifier. 
+def get_num_features(X, y, params, nfolds=10, n_trees=500):
     cv = CrossValidate(None, X, y)
+    n = 0
+    score = 0
     for p in params:
         rf = Classifier(X, y, p, n_trees)
         rf.train()
         cv.set_model(rf.model)
-        scores[cv.get_cv_score(nfolds)] = p
-        m2 = min(scores.keys())
-    return scores[m2], m2
+        temp = cv.get_cv_score(nfolds)
+        if temp > score:
+            score = temp
+            n = p
+    return score, n
 
