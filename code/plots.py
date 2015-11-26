@@ -25,9 +25,9 @@ def histogram(sums, numbins = 100):
     plt.show()
 
 # OOB error rate plots for Random Forest Classifiers. numfeatures
-def OOB_error_rates(min, max, X, y, max_features):
+def OOB_error_rates(list, X, y, max_features):
     error_rates = OrderedDict()
-    for i in range(min, max+1):
+    for i in list:
         rf = Classifier(X = X, y = y, max_features=max_features, n_estimators=i)
         rf.train()
         oob_error = 1 - rf.model.oob_score_
@@ -35,7 +35,7 @@ def OOB_error_rates(min, max, X, y, max_features):
     return error_rates
 
 
-        
+    
 
     
     
