@@ -5,14 +5,18 @@ from sklearn.cross_validation import KFold
 import random
 from rf_classify import Classifier
 from cross_validation import CrossValidate
+from time import time
 
 paths = document_paths('train')
-train_paths = random.sample(paths, 5000)
+train_paths = random.sample(paths, 2000)
 remaining_paths = [p for p in paths if p not in train_paths]
 test_paths = random.sample(remaining_paths, 500)
 
-X, initial_words, vectorizer = featurize_documents(train_paths)
-X, words = lemmatize_design_matrix(X, initial_words)
+start = time()
+XX, initial_words, vectorizer = featurize_documents(train_paths)
+print time() - start
+X, words = lemmatize_design_matrix(XX, initial_words)
+X, words = remove_numerals(X, words)
 
 print("done with design matrix")
 
@@ -20,16 +24,23 @@ y_train = get_labels(train_paths)
 y_test = get_labels(test_paths)
 
 print 'classifying'
-rf = Classifier(X, y_train)
-rf.set_
-rf.train()
+rf = Classifier(X, y_train, 'auto')
 
-X_test = lemmatize_design_matrix(
-    vectorizer.transform(test_paths).toarray(), initial_words)[0]
+start = time()
+rf.train()
+print time() - start
+
+X_test, words_test = lemmatize_design_matrix(
+    vectorizer.transform(test_paths).toarray(), initial_words)
+X_test = remove_numerals(X_test, words_test)[0]
 y_predicted = rf.predict(X_test)
 
 print accuracy_score(y_predicted, y_test)
 
-rf_cross_validate = CrossValidate(X, y_train)
+rf_cross_validate = CrossValidate(rf.model, X, y_train)
 
-print(rf_cross_validate.cv_score(10))
+start = time()
+print(rf_cross_validate.get_cv_score(10))
+print time() - start
+
+

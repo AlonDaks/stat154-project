@@ -61,13 +61,6 @@ def get_labels(paths):
         labels.append(label)
     return np.array(labels)
 
-# Return 1 if in class K, 0 otherwise. To be used for ROC curves.
-def get_binary_labels(k, paths):
-    labels = get_labels(paths)
-    return np.array([1 if l == k else 0 for l in labels])
-    
-
-
 def remove_numerals(X, words):
     merged_columns = OrderedDict()
     for i in range(len(words)):
