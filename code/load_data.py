@@ -7,7 +7,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet
 from os import listdir
 import re
-from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 import stop_words
 from collections import OrderedDict
 
@@ -27,23 +27,31 @@ def document_paths(data_set):
             for i in listdir(RELATIVE_DATA_PATH + 'test/') if i != '.DS_Store'
         ]
 
-
 def training_path_by_class(class_name):
     train_relative_paths = 'train/{0}/'.format(class_name)
     return [RELATIVE_DATA_PATH + train_relative_paths + i
             for i in listdir(RELATIVE_DATA_PATH + train_relative_paths)
             if i != '.DS_Store']
 
-
+# Word Feature Matrix processing.
 def featurize_documents(document_paths):
-    vectorizer = TfidfVectorizer(decode_error='replace',
+    vectorizer = CountVectorizer(decode_error='replace',
                                  input='filename',
                                  stop_words=stop_words.STOP_WORDS,
-                                 min_df=.05,
-                                 max_df=.95,
+                                 min_df=.10,
+                                 max_df=.90,
                                  tokenizer=Tokenizer())
     X = vectorizer.fit_transform(document_paths).toarray()
-    return X, vectorizer.get_feature_names(), vectorizer
+    words = vectorizer.get_feature_names()
+    X, words = lemmatize_design_matrix(X, words)
+    X, words = remove_numerals(X, words)
+    return X, words, vectorizer
+
+#TFIDF processing
+def tfidf(X):
+    transformer = TfidfTransformer()
+    X = transformer.fit_transform(X)
+    return X, transformer
 
 
 def get_labels(paths):
@@ -67,8 +75,6 @@ def remove_numerals(X, words):
         if not re.match("\A\d*\Z", words[i]):
             merged_columns[words[i]] = X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
-
-
 
 
 # Convert nltk tags to wordnet tags
@@ -122,14 +128,10 @@ def write_to_csv(filename, X, header):
 class Tokenizer:
     def __call__(self, doc):
         doc = self.strip_gutenberg_header_footer(doc)
-        return [self.strip(t) for t in word_tokenize(doc)]
+        return [self.strip(t) for t in word_tokenize(doc) if len(self.strip(t)) >= 2]
 
     def strip(self, word):
-        word = re.sub('[\W_]+', '', word)
-        if len(word) == 1:
-            return ""
-        else:
-            return word
+        return re.sub('[\W_]+', '', word)
 
     def strip_gutenberg_header_footer(self, doc):
         try:
