@@ -10,6 +10,7 @@ import re
 from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
 import stop_words
 from collections import OrderedDict
+import pickle
 
 RELATIVE_DATA_PATH = '../data/'
 
@@ -53,6 +54,12 @@ def tfidf(X):
     X = transformer.fit_transform(X)
     return X, transformer
 
+def generate_design_matrix():
+    train_paths = document_paths("train")
+    X, words, vectorizer = featurize_documents(train_paths)
+    X, transformer = tfidf(X)
+    pickle.dump((X, words, vectorizer, transformer))
+    
 
 def get_labels(paths):
     labels = []
