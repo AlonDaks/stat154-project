@@ -1,0 +1,166 @@
+performed very gently and carefully, as otherwise oxygen will rush in so
+rapidly as to cause excessive tension. As the bag fills with gas, the
+index on the petroleum manometer moves along the arc of a circle and
+gradually reaches the desired point. At this point, the supply of oxygen
+is cut off, the valve connecting the tension-equalizer with the main
+system is opened, and simultaneously the needle-valve on the
+reduction-valve of the oxygen cylinder is tightly closed, preliminary to
+weighing the cylinder. At this point the motor can be started and the
+experiment continued.
+
+It is necessary, then, that the oxygen cylinder be weighed. This is done
+after first closing the pet-cock on the end of the pipe conducting the
+gas beneath the floor of the calorimeter room, slipping the glass joint
+in the rubber pipe leading from the reduction valve to the pet-cock, and
+breaking the connections between the two rubber pipes, the one from the
+pet-cock and the other to the reduction valve, also breaking the
+electrical connection leading to the magnet on the cylinder. The
+cylinder is then ready to swing freely without any connections to either
+oxygen pipe or electrical wires. It is then weighed, the loss in weight
+being noted by removing the brass weights on the shelf attached to the
+counterpoise. It is important to see that there is a sufficient number
+of brass weights always on the shelf to allow for a maximum loss of
+weight of oxygen from the cylinder during a given period. Since the
+cylinders contain not far from 4 to 5 kilograms of oxygen, in balancing
+the cylinders at the start it is customary to place at least 4 kilograms
+of brass weights on the shelf and then adjust the counterpoise so as to
+allow for the gradual removal of these weights as the oxygen is
+withdrawn.
+
+As soon after the beginning of the period as possible, the U-tubes are
+weighed on the analytical balance, and if they have not gained too much
+they are connected ready for the next analysis. If they have already
+absorbed too much water or carbon dioxide, they are replaced by freshly
+filled tubes.
+
+Immediately at the end of the experimental period the barometer is
+carefully set and read, and the reading is verified by another
+assistant. Throughout the whole experiment an assistant counts the pulse
+of the subject frequently, by means of the stethoscope, and records the
+respiration rate by noting the lesser fluctuations of the tambour
+pointer on the smoked paper. These observations are recorded every few
+minutes in a book kept especially for this purpose.
+
+A most excellent preservation of the record of the minor muscular
+movements is obtained by dipping the smoked paper on the kymograph drum
+in a solution of resin and alcohol. The lesser movements on the paper
+indicate the respiration rate, but every minor muscular movement, such
+as moving the arm or shifting the body in any way, is shown by a large
+deflection of the pointer out of the regular zone of vibration. These
+records of the minor muscular activity are of great importance in
+interpreting the results of the chemical and physical determinations.
+
+FOOTNOTES:
+
+[5] W. O. Atwater and F. G. Benedict: A respiration calorimeter with
+appliances for the direct determination of oxygen. Carnegie Institution
+of Washington Publication No. 42, p. 91. (1905.)
+
+Francis G. Benedict: The influence of inanition on metabolism. Carnegie
+Institution of Washington Publication No. 77, p. 451. (1907.)
+
+[6] W. O. Atwater and F. G. Benedict: A respiration calorimeter with
+appliances for the direct determination of oxygen. Carnegie Institution
+of Washington Publication No. 42, p. 114. (1905.)
+
+[7] W. O. Atwater and F. G. Benedict: A respiration calorimeter with
+appliances for the direct determination of oxygen. Carnegie Institution
+of Washington Publication No. 42, p. 158. (1905.)
+
+[8] Armsby: U. S. Dept. of Agr., Bureau of Animal Industry Bull. 51, p.
+34. (1903.)
+
+[9] Benedict and Snell: Eine neue Methode um Koerpertemperaturen zu
+messen. Archiv f. d. ges. Physiologie, Bd. 88, pp. 492-500. (1901.)
+
+W. O. Atwater and F. G. Benedict: A respiration calorimeter with
+appliances for the direct determination of oxygen. Carnegie Institution
+of Washington Publication No. 42, p. 156. (1905.)
+
+[10] Rosa: U. S. Dept. of Agric., Office of Experiment Stations Bul. 63,
+p. 25.
+
+[11] Smith: Heat of evaporation of water. Physical Review, vol. 25, p.
+145. (1907.)
+
+[12] Philosophical Transactions, vol. 199, A, p. 149. (1902.)
+
+[13] This is in agreement with the value 579.6 calories found by F.
+Henning, Ann. d. Physik, vol. 21, p. 849. (1906.)
+
+[14] Pembrey: Schaefer's Text-book of Physiology, vol. 1, p. 838. (1898.)
+
+[15] Benedict and Snell: Koerpertemperatur Schwankungen mit besonderer
+Ruecksicht auf den Einfluss, welchen die Umkehrung der taeglichen
+Lebensgewoehnheit beim Menschen ausuebt. Archiv f. d. ges. Physiologie,
+Bd. 90. p. 33. (1902.)
+
+Benedict: Studies in body-temperature: I. The influence of the inversion
+of the daily routine: the temperature of night-workers. American Journal
+of Physiology, vol. 11, p. 145. (1904.)
+
+[16] W. O. Atwater and E. B. Rosa: Description of a new respiration
+calorimeter and experiments on the conservation of energy in the human
+body. U. S. Dept. of Agr., Office of Experiment Stations Bul. 63.
+(1899.)
+
+[17] Specific heat of water at average temperature of the water in the
+heat-absorbing system referred to the specific heat of water at 20 deg. C.
+
+[18] W. O. Atwater and F. G. Benedict: A respiration calorimeter with
+appliances for the direct determination of oxygen. Carnegie Institution
+of Washington Publication No. 42, p. 18. (1905.)
+
+[19] For a description of the apparatus and the method of filling see W.
+O. Atwater and F. G. Benedict: A respiration calorimeter with appliances
+for the direct determination of oxygen. Carnegie Institution of
+Washington Publication No. 43, p. 27. (1905.)
+
+[20] W. O. Atwater and F. G. Benedict: A respiration calorimeter with
+appliances for the direct determination of oxygen. Carnegie Institution
+of Washington Publication No. 42, p. 56. (1905.)
+
+[21] W. O. Atwater and F. G. Benedict: A respiration calorimeter with
+appliances for the direct determination of oxygen. Carnegie Institution
+of Washington Publication No. 42, p. 20. (1905.)
+
+[22] Thorne M. Carpenter and Francis G. Benedict: Mercurial poisoning of
+men in a respiration chamber. American Journal of Physiology, vol. 24,
+p. 187. (1909.)
+
+[23] Francis G. Benedict: A method of calibrating gas-meters. Physical
+Review, vol. 22, p. 294. (1906.)
+
+[24] Atwater and Benedict: _Loc. cit._, p. 38.
+
+[25] Atwater and Benedict: Carnegie Institution of Washington
+Publication No. 42, p. 77.
+
+[26] In the use of logarithms space is saved by not employing
+characteristics.
+
+[27] Francis G. Benedict: An apparatus for studying the respiratory
+exchange. American Journal of Physiology, vol. 24, p. 368. (1909.)
+
+[28] Squibb: Journal of American Chemical Society, vol. 19, p. 111.
+(1897.)
+
+[29] Squibb: Ephemeris, 1884 to 1885, part 2, pp. 562-577.
+
+[30] Morley: Journal of American Chemical Society, vol. 26, p. 1185.
+(1904.)
+
+[31] W. P. Lombard: A method of recording changes in body-weight which
+occur within short intervals of time. The Journal of the American
+Medical Association, vol. 47, p. 1790. (1906.)
+
+[32] Atwater and Benedict: _Loc. cit._, p. 21.
+
+
+
+
+
+
+End of the Project Gutenberg EBook of Respiration Calorimeters for Studying
+the Respiratory Exchange and Energy Transformations of Man, by Francis Gano Benedict and Thorne M. Carpenter
+

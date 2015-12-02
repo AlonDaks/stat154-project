@@ -3,10 +3,10 @@ import numpy as np
 import os
 
 def generate_validation_set():
-    child_paths = training_path_by_class('child')
-    history_paths = training_path_by_class('history')
-    religion_paths = training_path_by_class('religion')
-    science_paths = training_path_by_class('science')
+    child_paths = np.array(training_path_by_class('child', 'train'))
+    history_paths = np.array(training_path_by_class('history', 'train'))
+    religion_paths = np.array(training_path_by_class('religion', 'train'))
+    science_paths = np.array(training_path_by_class('science', 'train'))
     random_child_indexes = np.random.choice(
         range(len(child_paths)),
         size=(len(child_paths) * .15) / 1,
@@ -30,3 +30,7 @@ def generate_validation_set():
                                                 ))
     for f in validation_document_paths:
         os.rename(f, f.replace('train', 'validate'))
+
+
+if __name__ == '__main__':
+    generate_validation_set()
