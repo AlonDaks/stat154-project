@@ -16,20 +16,24 @@ RELATIVE_DATA_PATH = '../data/'
 
 
 def document_paths(data_set):
-    if data_set == 'train':
-        child_paths = training_path_by_class('child')
-        history_paths = training_path_by_class('history')
-        religion_paths = training_path_by_class('religion')
-        science_paths = training_path_by_class('science')
+    if data_set == 'train' or data_set == 'validate':
+        child_paths = training_path_by_class('child', data_set)
+        history_paths = training_path_by_class('history', data_set)
+        religion_paths = training_path_by_class('religion', data_set)
+        science_paths = training_path_by_class('science', data_set)
         return child_paths + history_paths + religion_paths + science_paths
     if data_set == 'test':
         return [
             RELATIVE_DATA_PATH + 'test/' + i
             for i in listdir(RELATIVE_DATA_PATH + 'test/') if i != '.DS_Store'
         ]
+        
 
-def training_path_by_class(class_name):
-    train_relative_paths = 'train/{0}/'.format(class_name)
+def training_path_by_class(class_name, data_set):
+    if data_set == 'train':
+        train_relative_paths = 'train/{0}/'.format(class_name)
+    else:
+        train_relative_paths = 'validate/{0}/'.format(class_name)
     return [RELATIVE_DATA_PATH + train_relative_paths + i
             for i in listdir(RELATIVE_DATA_PATH + train_relative_paths)
             if i != '.DS_Store']
@@ -58,7 +62,7 @@ def generate_design_matrix():
     train_paths = document_paths("train")
     X, words, vectorizer = featurize_documents(train_paths)
     X, transformer = tfidf(X)
-    pickle.dump((X, words, vectorizer, transformer))
+    pickle.dump((X, words, vectorizer, transformer), open('design_matrix.pkl', 'w+'))
     
 
 def get_labels(paths):
@@ -66,13 +70,13 @@ def get_labels(paths):
     for path in paths:
         label = None
         if 'child' in path:
-            label = 1
+            label = 0
         elif 'history' in path:
-            label = 2
+            label = 1
         elif 'religion' in path:
-            label = 3
+            label = 2
         else:
-            label = 4
+            label = 3
         labels.append(label)
     return np.array(labels)
 
@@ -120,6 +124,16 @@ def lemmatize_design_matrix(X, words):
         else:
             merged_columns[words[i]] += X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
+
+def lemmatize_test_set(X, words):
+    merged_columns = OrderedDict()
+    for i in range(len(words)):
+        if words[i] not in merged_columns:
+            merged_columns[words[i]] = X[:, i]
+        else:
+            merged_columns[words[i]] += X[:, i]
+    return np.array(merged_columns.values()).T, merged_columns.keys()
+    
 
 # Assume that X is our numpy array design matrix, header is a list of our features
 def write_to_csv(filename, X, header):

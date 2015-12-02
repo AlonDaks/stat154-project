@@ -1,11 +1,12 @@
 from load_data import *
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.cross_validation import KFold
+from sklearn.cross_validation import KFold, cross_val_score
 from sklearn.feature_selection import SelectFromModel
 from cross_validation import CrossValidate
 import math
 from collections import OrderedDict
+from numpy import mean
 
 class Classifier:
     def __init__(self, X, y, max_features='auto', n_estimators=500):
@@ -29,19 +30,16 @@ class Classifier:
         return probs[:, k]
 
 # Cross Validate the number of parameters used. Assume params is a list, X, y, n_trees are as in Classifier. 
-def get_num_features(X, y, params, nfolds=10, n_trees=500):
-    cv = CrossValidate(None, X, y)
-    n = 0
+def get_num_features(X, y, params, nfolds=10, n_trees=50):
+    p = 0
     score = 0
-    for p in params:
-        rf = Classifier(X, y, p, n_trees)
-        rf.train()
-        cv.set_model(rf.model)
-        temp = cv.get_cv_score(nfolds)
+    for num in params:
+        rf = Classifier(X, y, max_features=num, n_estimators=n_trees)
+        temp = mean(cross_val_score(rf.model, X, y, cv = nfolds, n_jobs=-1))
         if temp > score:
             score = temp
-            n = p
-    return score, n
+            p = num
+    return score, num
 
 # OOB error rate plots for Random Forest Classifiers. numfeatures
 def OOB_error_rates(nTrees, X, y, max_features = 'auto'):

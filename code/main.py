@@ -2,26 +2,7 @@ from load_data import *
 from rf_classify import *
 from cross_validation import *
 from time import time
-# Get the paths for our trainging set and test set.
-train_paths = document_paths("train")
-test_paths = document_paths("test")
 
-# Process our inital design matrix. Time it for now just so we can see how long it takes
-start = time()
-print "Processing design matrix..."
-XX, WORDS, vectorizer = featurize_documents(train_paths)
-print time() - start
-
-# Take our inital design matrix and features, lemmatize and remove numerals
-start = time()
-print "Lemmatizing and removing numerals..."
-X, words = lemmatize_design_matrix(XX, WORDS)
-X, words = remove_numerals(X, words)
-print time() - start
-
-# Get labels for train and test set
-y_train = get_labels(train_paths)
-y_test = get_labels(test_paths)
 
 # Random forest model.
 rf = Classifier(X, y_train, 'auto', 500)
@@ -42,11 +23,29 @@ print "Training the reduced model..."
 rf.train()
 print time() - start
 
-
-
 # Cross-validate for number of features used at each plot. 
-params = range(10, 110, 10)
-score, p = get_num_features(reduced_X, y_train, params)
+start = time()
+score, p = get_num_features(X, y_train, params)
+print time() - start
+
+
+def document_paths(data_set):
+    child_paths = training_path_by_class('child', data_set)
+    history_paths = training_path_by_class('history', data_set)
+    religion_paths = training_path_by_class('religion', data_set)
+    science_paths = training_path_by_class('science', data_set)
+    return child_paths + history_paths + religion_paths + science_paths
+    
+def training_path_by_class(class_name, data_set):
+    if data_set == 'train':
+        train_relative_paths = 'train/{0}/'.format(class_name)
+    else:
+        train_relative_paths = 'validate/{0}/'.format(class_name)
+    return [RELATIVE_DATA_PATH + train_relative_paths + i
+            for i in listdir(RELATIVE_DATA_PATH + train_relative_paths)
+            if i != '.DS_Store']
+
+
 
 
 

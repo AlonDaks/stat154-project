@@ -10,12 +10,8 @@ class CrossValidate:
         self.y = y
     
     def get_cv_score(self, cv):
-        kf = self.make_folds(cv)
-        scores = cross_val_score(self.model, self.X, self.y, cv = kf)
+        scores = cross_val_score(self.model, self.X, self.y, cv = cv, n_jobs = -1)
         return mean(scores)
-        
-    def make_folds(self, cv):
-        return KFold(self.X.shape[0], n_folds = cv, shuffle = True)
     
     def set_model(self, model):
         self.model = model

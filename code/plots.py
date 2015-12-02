@@ -73,13 +73,13 @@ def one_vs_all_ROC(y_true, y_prob):
     y_temp = get_binary_labels(1, y_true)
     pred_prob = y_prob[:, 1]
     fpr, tpr, _ = roc_curve(y_temp, pred_prob)
-    classes = ["Child vs all \n (AUC = " + str(auc(fpr,tpr)) + ")"]*len(fpr)
+    classes = ["Child vs all (AUC = %.4f)" %auc(fpr, tpr)]*len(fpr)
     dat = pd.DataFrame(np.array([fpr.tolist(), tpr.tolist(), classes]).T, columns = ["fpr", "tpr","class"])
     for i in [2,3,4]:
         y_temp = get_binary_labels(i, y_true)
         pred_prob = y_prob[:, i-1]
         fpr, tpr, _ = roc_curve(y_temp, pred_prob)
-        classes = [get_class_name(i) + " vs all \n (AUC = " + str(auc(fpr, tpr)) + ")"]*len(fpr)
+        classes = [get_class_name(i) + " vs all (AUC = %.4f)" %auc(fpr, tpr)]*len(fpr)
         temp = pd.DataFrame(np.array([fpr.tolist(), tpr.tolist(), classes]).T, columns = ["fpr", "tpr","class"])
         dat = dat.append(temp)
     return dat
@@ -88,7 +88,7 @@ def one_vs_all_ROC(y_true, y_prob):
 def micro_avg_ROC(y_true, y_prob):
     y = label_binarize(y_true, classes = [1,2,3,4]) 
     fpr, tpr, _ = roc_curve(y.ravel(), y_prob.ravel())
-    classes = ["Micro Average (AUC = " + str(auc(fpr, tpr)) + ")"] * len(fpr)
+    classes = ["Micro Average (AUC = %.4f)" %auc(fpr, tpr)] * len(fpr)
     return pd.DataFrame(np.array([fpr.tolist(), tpr.tolist(), classes]).T, columns = ["fpr", "tpr", "class"])
 
 # Helper function for ROC plots. Return pandas DataFrame with columns 'tpr', 'fpr' and 'class'. Here, class is 'Macro-average'.
@@ -122,6 +122,13 @@ def macroAvg_ROC_plot(y_true, y_prob):
     p = ggplot(aes(x = 'fpr', y = 'tpr'), data = dat) + geom_line()
     p += geom_abline(intercept = 0, slope = 1, color = 'black', linetype = 'dashed')
     return p
+
+# OBB error rate plots. Assume error_rates is a dictionary (ordered dictoinary)
+def OOB_error_plot(error_rates):
+    dat = pd.DataFrame(np.array([error_rates.keys(), error_rates.values()]).T, columns = ['NTrees', 'OBBerrors'])
+    p = ggplot(aes(x = 'Ntrees', y = 'OOBerrors'), data = dat) + geom_step()
+    p += labs(title='OBB Error Rates', x='Number of Trees', y='OBB Error Rate')
+    p += xlim()
           
     
 
