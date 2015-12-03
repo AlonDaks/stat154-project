@@ -30,12 +30,12 @@ def generate_cv_paths():
             random_history_indexes], religion_paths[
                 random_religion_indexes], science_paths[random_science_indexes]))
 
-def generate_cv_objects(cv_paths):
+def generate_cv_objects(cv_paths, rmv=0.05):
     vectorizer = CountVectorizer(decode_error='replace',
                                  input='filename',
                                  stop_words=stop_words.STOP_WORDS,
-                                 min_df=0.05,
-                                 max_df=0.95,
+                                 min_df=rmv,
+                                 max_df=1-rmv,
                                  tokenizer=Tokenizer())
     return vectorizer.fit_transform(cv_paths), vectorizer.get_feature_names(), vectorizer
 
