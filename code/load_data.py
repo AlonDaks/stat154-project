@@ -67,6 +67,13 @@ def tfidf(X):
     X = transformer.fit_transform(X)
     return X, transformer
 
+def generate_design_matrix():
+    train_paths = document_paths("train")
+    y = get_labels(train_paths)
+    X, words, vectorizer = featurize_documents(train_paths)
+    X, transformer = tfidf(X)
+    pickle.dump((X, y, words, vectorizer, transformer), open('design_matrix.pkl', 'w+'))
+
 def get_labels(paths):
     labels = []
     for path in paths:
@@ -166,3 +173,4 @@ class Tokenizer:
         except:
             pass
         return doc
+    
