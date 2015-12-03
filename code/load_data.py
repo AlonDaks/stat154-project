@@ -7,10 +7,13 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import wordnet
 from os import listdir
 import re
-from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer
+from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer,\
+    VectorizerMixin
 import stop_words
+from sklearn.decomposition import IncrementalPCA
 from collections import OrderedDict
 import pickle
+from sklearn.decomposition.incremental_pca import IncrementalPCA
 
 RELATIVE_DATA_PATH = '../data/'
 
@@ -52,18 +55,17 @@ def featurize_documents(document_paths):
     X, words = remove_numerals(X, words)
     return X, words, vectorizer
 
+#PCA analysis
+def pca_feature_matrix(X, n_components):
+    pca = IncrementalPCA(n_components = n_components)
+    X = pca.fit_transform(X)
+    return X
+
 #TFIDF processing
 def tfidf(X):
     transformer = TfidfTransformer()
     X = transformer.fit_transform(X)
     return X, transformer
-
-def generate_design_matrix():
-    train_paths = document_paths("train")
-    X, words, vectorizer = featurize_documents(train_paths)
-    X, transformer = tfidf(X)
-    pickle.dump((X, words, vectorizer, transformer), open('design_matrix.pkl', 'w+'))
-    
 
 def get_labels(paths):
     labels = []
@@ -87,6 +89,13 @@ def remove_numerals(X, words):
             merged_columns[words[i]] = X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
 
+#Power feature, if document contains numeral
+def numeral_feature(X, words):
+    numerals = [0] * X.shape[0]
+    for i in range(len(words)):
+        if re.match("[0-9]+", words[i]):
+            numerals = np.add(X[:, i], numerals)
+    return numerals
 
 # Convert nltk tags to wordnet tags
 def get_wordnet_pos(treebank_tag):
@@ -124,16 +133,6 @@ def lemmatize_design_matrix(X, words):
         else:
             merged_columns[words[i]] += X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
-
-def lemmatize_test_set(X, words):
-    merged_columns = OrderedDict()
-    for i in range(len(words)):
-        if words[i] not in merged_columns:
-            merged_columns[words[i]] = X[:, i]
-        else:
-            merged_columns[words[i]] += X[:, i]
-    return np.array(merged_columns.values()).T, merged_columns.keys()
-    
 
 # Assume that X is our numpy array design matrix, header is a list of our features
 def write_to_csv(filename, X, header):

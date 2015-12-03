@@ -1,9 +1,7 @@
 from load_data import *
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.cross_validation import KFold, cross_val_score
-from sklearn.feature_selection import SelectFromModel
-from cross_validation import CrossValidate
+from sklearn.cross_validation import cross_val_predict
 import math
 from collections import OrderedDict
 from numpy import mean
@@ -12,6 +10,7 @@ class Classifier:
     def __init__(self, X, y, max_features='auto', n_estimators=500):
         self.model = RandomForestClassifier(max_features=max_features,
                                             n_estimators=n_estimators,
+                                            max_depth=10,
                                             oob_score=True, n_jobs=-1)
         self.X = X
         self.y = y
@@ -30,12 +29,13 @@ class Classifier:
         return probs[:, k]
 
 # Cross Validate the number of parameters used. Assume params is a list, X, y, n_trees are as in Classifier. 
-def get_num_features(X, y, params, nfolds=10, n_trees=50):
+def get_num_features(X, y, params, nfolds=10, n_trees=500):
     p = 0
     score = 0
     for num in params:
         rf = Classifier(X, y, max_features=num, n_estimators=n_trees)
-        temp = mean(cross_val_score(rf.model, X, y, cv = nfolds, n_jobs=-1))
+        temp = cross_val_predict(rf.model, X, y, cv = nfolds, n_jobs=-1)
+        temp = accuracy_score(y, temp)
         if temp > score:
             score = temp
             p = num
@@ -50,15 +50,6 @@ def OOB_error_rates(nTrees, X, y, max_features = 'auto'):
         oob_error = 1 - rf.model.oob_score_
         error_rates[i] = oob_error
     return error_rates
-
-# Feature selection using variable importance based on threshold. Return the new design matrix X and list of features words.
-def feature_selection(rf, X, words, threshold="median"):
-    result = []
-    selector = SelectFromModel(rf.model, threshold=threshold, prefit = True)
-    new_X = selector.transform(X)
-    for i in selector.get_support(True):
-        result.append(words[i])
-    return new_X, result
 
 
 
