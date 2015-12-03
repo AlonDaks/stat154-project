@@ -1,3 +1,7 @@
 .DS_Store
 *.pyc
 data/old_data/
+venv/
+*.pkl
+*.pkl.*
+.csv
