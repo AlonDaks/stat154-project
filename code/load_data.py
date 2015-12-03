@@ -98,7 +98,7 @@ def remove_numerals(X, words):
 
 #Power feature, if document contains numeral
 def numeral_feature(X, words):
-    numerals = [0] * X.shape[0]
+    numerals = np.zeros(X.shape[0])
     for i in range(len(words)):
         if re.match("[0-9]+", words[i]):
             numerals = np.add(X[:, i], numerals)
@@ -117,7 +117,7 @@ def get_wordnet_pos(treebank_tag):
         return wordnet.NOUN
 
 
-    # text is a list that contains all text from a single document. Assume no non alpha-numeric text.
+# text is a list that contains all text from a single document. Assume no non alpha-numeric text.
 def tag_words(words):
     tags = pos_tag(words)
     tags = [(word, get_wordnet_pos(tag)) for (word, tag) in tags]
@@ -129,10 +129,13 @@ def get_word_count_dictionary(X, words):
 
 
 # Assume X is our design matrix, words is a list of our features.
-def lemmatize_design_matrix(X, words):
-    words = tag_words(words)
+def lemmatize_design_matrix(X, words, only_nouns=False):
     wnl = WordNetLemmatizer()
-    words = [wnl.lemmatize(w, t) for w,t in words]
+    if only_nouns:
+        words = [wnl.lemmatize(w) for w in words]
+    else:
+        words = tag_words(words)
+        words = [wnl.lemmatize(w, t) for w,t in words]
     merged_columns = OrderedDict()
     for i in range(len(words)):
         if words[i] not in merged_columns:
