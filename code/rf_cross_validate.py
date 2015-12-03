@@ -48,5 +48,5 @@ for design_matrix_version in range(3):
 			cross_validated_values[design_matrix_version, lemmatize_version, m] = np.mean(np.array(current_model_accuracies))
 
 
-
+pickle.dump(cross_validated_values, open('cross_validated_values.pkl', 'w+'))
 
