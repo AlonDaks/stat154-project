@@ -2,12 +2,15 @@ from load_data import *
 from sklearn.metrics import accuracy_score
 from sklearn.cross_validation import cross_val_predict
 from numpy import mean
-from sklearn.svm import SVC
+from sklearn.svm import SVC, LinearSVC
 
 
 class Classifier:
 	def __init__(self, X, y, C=1.0, kernel='rbf', degree=2):
-		self.model = SVC(C=C, kernel=kernel, degree=degree)
+		if kernel == 'linear':
+			self.model = LinearSVC(C=C)
+		else:
+			self.model = SVC(C=C, kernel=kernel, degree=degree)
         self.X = X
         self.y = y
 
