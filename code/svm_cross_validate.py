@@ -48,13 +48,13 @@ for design_matrix_version in range(3):
 							elif design_matrix_version == 1:
 								X_train, X_test = X_train.astype(float), X_test.astype(float)
 								X_train = normalize(X_train, axis=1, norm='l1')
-								X_test = normalize(X_test, axis=1, norm='l1')]
+								X_test = normalize(X_test, axis=1, norm='l1')
 							model = svm.Classifier(X_train, y_train, C=C[c], kernel=kernels[k], degree = degrees[d])
 							model.train()
 							predicted_y = model.predict(X_test)
 							current_model_accuracies.append(accuracy_score(y_test, predicted_y))
 						cross_validated_values[design_matrix_version, lemmatize_version, c, k, d] = np.mean(np.array(current_model_accuracies))
-				else #if kernel is either linear or rbf we dont iterate over degree
+				else: #if kernel is either linear or rbf we dont iterate over degree
 					current_model_accuracies = []
 					for train_indices, test_indices in kf:
 						X_train, X_test = X[train_indices,:], X[test_indices,:]
@@ -72,7 +72,7 @@ for design_matrix_version in range(3):
 						elif design_matrix_version == 1:
 							X_train, X_test = X_train.astype(float), X_test.astype(float)
 							X_train = normalize(X_train, axis=1, norm='l1')
-							X_test = normalize(X_test, axis=1, norm='l1')]
+							X_test = normalize(X_test, axis=1, norm='l1')
 						model = svm.Classifier(X_train, y_train, C=C[c], kernel=kernels[k])
 						model.train()
 						predicted_y = model.predict(X_test)
