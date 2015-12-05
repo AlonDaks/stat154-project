@@ -7,7 +7,7 @@ from collections import OrderedDict
 from numpy import mean
 
 class Classifier:
-    def __init__(self, X, y, max_features='auto', n_estimators=500):
+    def __init__(self, X, y, max_features='auto', depth=30, n_estimators=325):
         self.model = RandomForestClassifier(max_features=max_features,
                                             n_estimators=n_estimators,
                                             max_depth=None,
