@@ -12,7 +12,7 @@ from sklearn.feature_extraction.text import TfidfTransformer, CountVectorizer,\
 import stop_words
 from sklearn.decomposition import IncrementalPCA
 from collections import OrderedDict
-import pickle
+import cPickle as pickle
 from sklearn.decomposition.incremental_pca import IncrementalPCA
 from nltk.stem.porter import PorterStemmer
 from nltk.stem.lancaster import LancasterStemmer
@@ -54,6 +54,7 @@ def featurize_documents(document_paths):
                                  tokenizer=Tokenizer())
     X = vectorizer.fit_transform(document_paths)
     words = vectorizer.get_feature_names()
+<<<<<<< HEAD
     return X, words, vectorizer
 
 #Word Feature Matrix with stemming
@@ -71,6 +72,17 @@ def stem_featurize_docs(document_paths):
     return X, words, vectorizer
 
 
+=======
+    return X, words, vectorizer
+
+
+def generate_design_matrix():
+    train_paths = document_paths("train")
+    X, words, vectorizer = featurize_documents(train_paths)
+    pickle.dump((X, words, vectorizer), open('design_matrix.pkl', 'w+'), protocol = -1)
+
+
+>>>>>>> 39b2d37041aa3b1d6fd8f4b4fd3a5b15af33680e
 #PCA analysis
 def pca_feature_matrix(X, n_components):
     pca = IncrementalPCA(n_components = n_components)
@@ -185,7 +197,6 @@ def write_to_csv(filename, X, header):
                delimiter=",",
                header=",".join(header),
                comments="")
-
 
 class Tokenizer:
     def __call__(self, doc):
