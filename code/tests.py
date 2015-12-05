@@ -43,4 +43,6 @@ start = time()
 print(rf_cross_validate.get_cv_score(10))
 print time() - start
 
+y_prob = rf.predict_proba(X_test)
+
 

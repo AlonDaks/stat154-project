@@ -31,11 +31,11 @@ for design_matrix_version in range(3):
 				elif lemmatize_version == 1:
 					X_train = ld.lemmatize_design_matrix(X_train, words, False)[0]
 					X_test = ld.lemmatize_design_matrix(X_test, words, False)[0]
-				if design_matrix_version == 0:
+				if design_matrix_version == 1:
 					transformer = TfidfTransformer()
 					X_train = transformer.fit_transform(X_train)
 					X_test = transformer.transform(X_test)
-				elif design_matrix_version == 1:
+				elif design_matrix_version == 2:
 					X_train, X_test = X_train.astype(float), X_test.astype(float)
 					X_train = normalize(X_train, axis=1, norm='l1')
 					X_test = normalize(X_test, axis=1, norm='l1')]
