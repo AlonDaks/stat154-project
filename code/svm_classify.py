@@ -11,11 +11,11 @@ class Classifier:
 			self.model = LinearSVC(C=C)
 		else:
 			self.model = SVC(C=C, kernel=kernel, degree=degree)
-        self.X = X
-        self.y = y
+		self.X = X
+		self.y = y
 
-    def train():
-    	self.model.fit(self.X, self.y)
+	def train(self):
+		self.model.fit(self.X, self.y)
 
-    def predict(self, new_data):
-        return self.model.predict(new_data)
+	def predict(self, new_data):
+		return self.model.predict(new_data)

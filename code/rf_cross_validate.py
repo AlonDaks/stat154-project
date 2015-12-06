@@ -5,9 +5,10 @@ import rf_classify as rf
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.preprocessing import normalize
 import load_data as ld
+from load_data import *
 from sklearn.metrics import accuracy_score
 
-DESIGN_MATRIX_PATH = 'cv_design_matrix.pkl'
+DESIGN_MATRIX_PATH = 'pure_counts_df5.pkl'
 X, y, words = pickle.load(open(DESIGN_MATRIX_PATH))
 
 X = X.toarray()
@@ -46,5 +47,5 @@ for design_matrix_version in range(3):
 			cross_validated_values[design_matrix_version, lemmatize_version, m] = np.mean(np.array(current_model_accuracies))
 
 
-pickle.dump(cross_validated_values, open('cross_validated_values.pkl', 'w+'))
+pickle.dump(cross_validated_values, open('rf_cross_validated_values.pkl', 'w+'))
 
