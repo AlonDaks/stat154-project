@@ -11,19 +11,19 @@ def generate_cv_paths():
     science_paths = np.array(training_path_by_class('science', 'train'))
     random_child_indexes = np.random.choice(
         range(len(child_paths)),
-        size=1600*2,
+        size=1600,
         replace=False)
     random_history_indexes = np.random.choice(
         range(len(history_paths)),
-        size=1200*2,
+        size=1200,
         replace=False)
     random_religion_indexes = np.random.choice(
         range(len(religion_paths)),
-        size=550*2,
+        size=550,
         replace=False)
     random_science_indexes = np.random.choice(
         range(len(science_paths)),
-        size=1650*2,
+        size=1650,
         replace=False)
     return np.concatenate((child_paths[
         random_child_indexes], history_paths[
