@@ -14,6 +14,9 @@ from sklearn.decomposition import IncrementalPCA
 from collections import OrderedDict
 import cPickle as pickle
 from sklearn.decomposition.incremental_pca import IncrementalPCA
+from nltk.stem.porter import PorterStemmer
+from nltk.stem.lancaster import LancasterStemmer
+from nltk.stem import SnowballStemmer
 
 RELATIVE_DATA_PATH = '../data/'
 
@@ -53,12 +56,24 @@ def featurize_documents(document_paths):
     words = vectorizer.get_feature_names()
     return X, words, vectorizer
 
+#Word Feature Matrix with stemming
+def stem_featurize_docs(document_paths):
+    vectorizer = CountVectorizer(decode_error='replace',
+                                 input='filename',
+                                 stop_words=stop_words.STOP_WORDS,
+                                 min_df=.05,
+                                 max_df=.95,
+                                 tokenizer=Tokenizer())
+    X = vectorizer.fit_transform(document_paths)
+    words = vectorizer.get_feature_names()
+    X, words = stem_design_matrix(X, words)
+    X, words = remove_numerals(X, words)
+    return X, words, vectorizer
 
 def generate_design_matrix():
     train_paths = document_paths("train")
     X, words, vectorizer = featurize_documents(train_paths)
     pickle.dump((X, words, vectorizer), open('design_matrix.pkl', 'w+'), protocol = -1)
-
 
 #PCA analysis
 def pca_feature_matrix(X, n_components):
@@ -72,6 +87,10 @@ def tfidf(X):
     X = transformer.fit_transform(X)
     return X, transformer
 
+def generate_design_matrix():
+    train_paths = document_paths("train")
+    X, words, vectorizer = featurize_documents(train_paths)
+    pickle.dump((X, y, words, vectorizer, transformer), open('design_matrix.pkl', 'w+'))
 
 def get_labels(paths):
     labels = []
@@ -143,6 +162,24 @@ def lemmatize_design_matrix(X, words, only_nouns=False):
             merged_columns[words[i]] += X[:, i]
     return np.array(merged_columns.values()).T, merged_columns.keys()
 
+# Stemming
+def stem_design_matrix(X, words, type='snowball'):
+    if type == 'snowball':
+        stemmer = SnowballStemmer("english")
+    elif type == 'porter':
+        stemmer = PorterStemmer()
+    else:
+        stemmer = LancasterStemmer()
+    words = [stemmer.stem(w) for w in words]
+    merged_columns = OrderedDict()
+    for i in range(len(words)):
+        if words[i] not in merged_columns:
+            merged_columns[words[i]] = X[:, i]
+        else:
+            merged_columns[words[i]] += X[:, i]
+    return np.array(merged_columns.values()).T, merged_columns.keys()
+    
+
 # Assume that X is our numpy array design matrix, header is a list of our features
 def write_to_csv(filename, X, header):
     s = filename + ".csv"
@@ -152,7 +189,6 @@ def write_to_csv(filename, X, header):
                delimiter=",",
                header=",".join(header),
                comments="")
-
 
 class Tokenizer:
     def __call__(self, doc):

@@ -5,7 +5,7 @@ from time import time
 
 practice_rel_path = ["../data/practice"]
 
-practice_paths = [practice_rel_path + 'test/' + i for i in range(102)]
+practice_paths = ["../data/Practice/%d.txt" %i for i in range(102)]
 
 
 
